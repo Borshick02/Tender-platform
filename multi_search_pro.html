@@ -662,6 +662,9 @@
         <div class="subtitle">
             Поиск с сохранением в PostgreSQL, API и ML-аналитикой (предсказание цены, риск, репутация заказчика)
         </div>
+        <div style="margin-bottom: 20px;">
+            <a href="/" onclick="window.location.port='8000'; return false;" style="color: #667eea; font-weight: 600; text-decoration: none; font-size: 14px;">← Базовая версия (порт 8000)</a>
+        </div>
 
             <form class="search-form" id="searchForm">
                 <div class="form-group">
@@ -885,74 +888,6 @@
         let currentFilter = 'all';
         let allTenders = [];
         let startTime = null;
-        let statusUrlBuilder = (taskId, serverUrl) => `${serverUrl}/api/search/${taskId}`;
-
-        async function readJsonResponse(response) {
-            const raw = await response.text();
-            let data = null;
-
-            if (raw && raw.trim()) {
-                try {
-                    data = JSON.parse(raw);
-                } catch {
-                    const preview = raw.slice(0, 300).replace(/\s+/g, ' ').trim();
-                    throw new Error(`Сервер вернул не JSON (HTTP ${response.status}): ${preview || 'пустой текст'}`);
-                }
-            }
-
-            if (!response.ok) {
-                const detail = (data && (data.detail || data.error)) || raw || response.statusText || 'unknown error';
-                throw new Error(`HTTP ${response.status}: ${detail}`);
-            }
-
-            if (!data) {
-                throw new Error(`Пустой ответ сервера (HTTP ${response.status})`);
-            }
-
-            return data;
-        }
-
-        async function startSearchWithFallback(serverUrl, payload) {
-            const candidates = [
-                {
-                    startUrl: `${serverUrl}/api/search`,
-                    statusBuilder: (taskId, base) => `${base}/api/search/${taskId}`,
-                },
-                {
-                    startUrl: `${serverUrl}/search`,
-                    statusBuilder: (taskId, base) => `${base}/status/${taskId}`,
-                },
-            ];
-
-            let lastError = null;
-            for (const candidate of candidates) {
-                try {
-                    const response = await fetch(candidate.startUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload),
-                    });
-
-                    if (response.status === 404 || response.status === 405) {
-                        lastError = new Error(`HTTP ${response.status}: ${response.statusText}`);
-                        continue;
-                    }
-
-                    const data = await readJsonResponse(response);
-                    if (!data.task_id) {
-                        lastError = new Error('Сервер не вернул task_id');
-                        continue;
-                    }
-
-                    statusUrlBuilder = candidate.statusBuilder;
-                    return data;
-                } catch (error) {
-                    lastError = error;
-                }
-            }
-
-            throw lastError || new Error('Не удалось запустить поиск');
-        }
 
         const SOURCE_MAP = {
             'rts':          { sources: ['RTS-TENDER'],                      badge: 'badge-rts',       card: 'rts-style' },
@@ -1026,9 +961,13 @@
             const serverUrl = window.location.origin;
 
             try {
-                const data = await startSearchWithFallback(serverUrl, {
-                    query, pages, sources, date_from: dateFrom, date_to: dateTo, min_days_left: minDaysLeft
+                const response = await fetch(`${serverUrl}/api/search`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, pages, sources, date_from: dateFrom, date_to: dateTo, min_days_left: minDaysLeft })
                 });
+
+                const data = await response.json();
                 if (data.task_id) {
                     currentTaskId = data.task_id;
                     pollTaskStatus();
@@ -1045,8 +984,8 @@
 
             const serverUrl = window.location.origin;
             try {
-                const response = await fetch(statusUrlBuilder(currentTaskId, serverUrl));
-                const data = await readJsonResponse(response);
+                const response = await fetch(`${serverUrl}/api/search/${currentTaskId}`);
+                const data = await response.json();
 
                 document.getElementById('progressBar').style.width = (data.progress ?? 0) + '%';
                 document.getElementById('statusText').textContent = `Статус: ${data.status || 'processing'} (${data.progress ?? 0}%)`;
