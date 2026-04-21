@@ -1,1 +1,68 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
+
+# Camoufox
+.camoufox/
+camoufox-data/
+
+# Результаты парсинга
+*_results.json
+all_tenders.json
+results_*.json
+
+# Логи и отладка
+*.log
+debug_*.png
+cv_debug/
+
+# Временные файлы
+*.tmp
+*.temp
+*.bak
+
+# Документация (временная)
+*.md.backup
+CHANGELOG_*.md
+TODO_*.md
+
+# Тестовые файлы
+test_*.html
+test_*.py
+debug_*.html
+
+
+
+
