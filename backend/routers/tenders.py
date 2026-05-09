@@ -49,3 +49,14 @@ def list_tenders(
 
     return {"total": total, "items": result, "limit": limit, "offset": offset}
 
+
+@router.get("/{tender_id}")
+def get_tender(tender_id: int, db: Session = Depends(get_db)):
+    """Карточка тендера с ML-предсказаниями."""
+    t = db.query(Tender).filter(Tender.id == tender_id).first()
+    if not t:
+        raise HTTPException(404, "Тендер не найден")
+    cnt = db.query(func.count(Tender.id)).filter(Tender.customer == t.customer).scalar() if t.customer else 0
+    d = t.to_dict()
+    enrich_tender(d, cnt)
+    return d
