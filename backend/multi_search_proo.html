@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тендеры Pro</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        /* ===== AUTH ===== */
+        .auth-overlay {
+            position: fixed; inset: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .auth-overlay.hidden { display: none; }
+        .auth-card {
+            background: white; border-radius: 20px; padding: 40px; width: 400px; max-width: 90vw;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .auth-card h2 { text-align: center; margin-bottom: 8px; color: #1a1a2e; font-size: 24px; }
+        .auth-card .auth-subtitle { text-align: center; color: #64748b; font-size: 13px; margin-bottom: 28px; }
+        .auth-tabs { display: flex; margin-bottom: 24px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; }
+        .auth-tab {
+            flex: 1; padding: 10px; text-align: center; cursor: pointer; font-weight: 600; font-size: 14px;
+            background: #f8fafc; color: #64748b; transition: all .2s;
+        }
+        .auth-tab.active { background: #667eea; color: white; }
+        .auth-input {
+            width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 10px;
+            font-size: 15px; margin-bottom: 14px; background: #fafafa; transition: border-color .2s;
+        }
+        .auth-input:focus { outline: none; border-color: #667eea; background: #fff; }
+        .auth-btn {
+            width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600;
+            cursor: pointer; color: white; background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(102,126,234,.4); transition: transform .2s;
+        }
+        .auth-btn:hover { transform: translateY(-2px); }
+        .auth-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+        .auth-error { color: #dc2626; font-size: 13px; margin-bottom: 12px; min-height: 18px; text-align: center; }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            background: white; border-radius: 16px; padding: 14px 28px; margin-bottom: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,.06); display: flex; justify-content: space-between; align-items: center;
+        }
+        .navbar .nav-left { display: flex; align-items: center; gap: 24px; }
+        .navbar .nav-brand { font-size: 20px; font-weight: 700; color: #1a1a2e; }
+        .nav-link {
+            padding: 8px 18px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;
+            color: #64748b; background: transparent; border: 1px solid transparent; transition: all .2s;
+        }
+        .nav-link:hover { background: #f1f5f9; }
+        .nav-link.active { background: #667eea; color: white; border-color: #667eea; }
+        .nav-user { display: flex; align-items: center; gap: 12px; }
+        .nav-user-email { font-size: 13px; color: #64748b; }
+        .nav-logout {
+            padding: 6px 14px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px;
+            cursor: pointer; color: #64748b; background: white; transition: all .2s;
+        }
+        .nav-logout:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+
+        /* ===== PAGE SECTIONS ===== */
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* ===== SEARCH FORM ===== */
+        .header {
+            background: white; border-radius: 16px; padding: 32px 36px; margin-bottom: 28px;
+            box-shadow: 0 4px 24px rgba(0,0,0,.06);
+        }
+        h1 { color: #1a1a2e; margin-bottom: 6px; font-size: 28px; font-weight: 700; }
+        .subtitle { color: #64748b; font-size: 13px; line-height: 1.5; margin-bottom: 28px; max-width: 720px; }
+        .search-form { display: flex; gap: 20px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 260px; }
+        .form-group.form-group--short { flex: 0 0 auto; min-width: 100px; max-width: 120px; }
+        label { display: block; margin-bottom: 8px; color: #475569; font-weight: 600; font-size: 13px; }
+        input[type="text"], input[type="number"], input[type="email"], input[type="password"], select {
+            width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 10px;
+            font-size: 15px; background: #fafafa; transition: border-color .2s;
+        }
+        input:focus, select:focus { outline: none; border-color: #667eea; background: #fff; }
+        .form-section { margin-bottom: 28px; }
+        .section-title { font-size: 13px; font-weight: 600; color: #555; margin-bottom: 12px; }
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px 24px; }
+        .checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 500; font-size: 14px; color: #444; padding: 6px 0; }
+        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: #667eea; flex-shrink: 0; }
+        .section-title-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+        .source-toggle-btn {
+            border: 1px solid #e2e8f0; background: #fff; color: #475569; border-radius: 10px;
+            padding: 6px 12px; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s;
+        }
+        .source-toggle-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
+        .field-invalid { border-color: #dc2626 !important; }
+        .field-error { margin-top: 6px; color: #dc2626; font-size: 12px; min-height: 16px; }
+        .form-error { margin-top: 10px; color: #dc2626; font-size: 13px; font-weight: 500; min-height: 18px; }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none;
+            padding: 14px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(102,126,234,.4); transition: transform .2s;
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 900; display: none;
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: white; border-radius: 16px; padding: 32px; max-width: 420px; width: 90vw;
+            text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.2);
+        }
+        .modal-icon { font-size: 48px; margin-bottom: 16px; }
+        .modal-title { font-size: 20px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+        .modal-text { font-size: 14px; color: #64748b; margin-bottom: 24px; line-height: 1.6; }
+        .modal-btn {
+            padding: 12px 32px; border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+            cursor: pointer; color: white; background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: transform .2s;
+        }
+        .modal-btn:hover { transform: translateY(-1px); }
+        .modal-btn-secondary {
+            padding: 12px 24px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px;
+            cursor: pointer; color: #64748b; background: white; margin-left: 10px; transition: all .2s;
+        }
+        .modal-btn-secondary:hover { background: #f1f5f9; }
+
+        /* ===== REQUESTS LIST ===== */
+        .requests-header {
+            background: white; border-radius: 16px; padding: 24px 32px; margin-bottom: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,.06); display: flex; justify-content: space-between; align-items: center;
+        }
+        .requests-header h2 { font-size: 22px; color: #1a1a2e; }
+        .request-card {
+            background: white; border-radius: 14px; padding: 20px 24px; margin-bottom: 14px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06); transition: transform .2s; cursor: pointer;
+            border-left: 4px solid #e2e8f0;
+        }
+        .request-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.1); }
+        .request-card.status-pending { border-left-color: #f59e0b; }
+        .request-card.status-running { border-left-color: #667eea; }
+        .request-card.status-completed { border-left-color: #22c55e; }
+        .request-card.status-error { border-left-color: #ef4444; }
+        .request-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .request-query { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+        .request-status {
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+        }
+        .status-badge-pending { background: #fef3c7; color: #92400e; }
+        .status-badge-running { background: #dbeafe; color: #1d4ed8; }
+        .status-badge-completed { background: #dcfce7; color: #166534; }
+        .status-badge-error { background: #fee2e2; color: #991b1b; }
+        .request-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: #64748b; }
+        .request-progress {
+            width: 100%; height: 4px; background: #f0f0f0; border-radius: 4px; margin-top: 10px; overflow: hidden;
+        }
+        .request-progress-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); transition: width .3s; }
+        .request-delete {
+            padding: 4px 10px; border: 1px solid #fca5a5; border-radius: 6px; font-size: 11px; color: #dc2626;
+            background: white; cursor: pointer; transition: all .2s;
+        }
+        .request-delete:hover { background: #fee2e2; }
+        .request-empty {
+            text-align: center; padding: 60px; background: white; border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,.06);
+        }
+        .request-empty-icon { font-size: 48px; margin-bottom: 12px; }
+        .request-empty-text { color: #64748b; font-size: 16px; margin-bottom: 20px; }
+
+        /* ===== RESULTS DETAIL ===== */
+        .detail-back {
+            padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px;
+            cursor: pointer; color: #64748b; background: white; transition: all .2s; margin-bottom: 16px; display: inline-block;
+        }
+        .detail-back:hover { background: #f1f5f9; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .stat-card { background: white; border-radius: 14px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.06); text-align: center; }
+        .stat-value { font-size: 28px; font-weight: 700; color: #667eea; }
+        .stat-label { color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+
+        .filters { background: white; border-radius: 14px; padding: 16px 20px; margin-bottom: 20px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+        .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-tab {
+            padding: 6px 16px; border: 2px solid #e0e0e0; border-radius: 20px; background: white;
+            cursor: pointer; font-size: 13px; transition: all .2s;
+        }
+        .filter-tab.active { background: #667eea; color: white; border-color: #667eea; }
+        .results { display: grid; gap: 16px; }
+
+        /* ===== TENDER CARDS ===== */
+        .tender-card {
+            background: white; border-radius: 14px; padding: 22px; box-shadow: 0 2px 12px rgba(0,0,0,.06);
+            transition: transform .2s;
+        }
+        .tender-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.1); }
+        .tender-card.rts-style { border-left: 4px solid #1976d2; }
+        .tender-card.rutend-style { border-left: 4px solid #7b1fa2; }
+        .tender-card.synapse-style { border-left: 4px solid #f57c00; }
+        .tender-card.tenderpro-style { border-left: 4px solid #5e35b1; }
+        .tender-card.rostender-style { border-left: 4px solid #1565c0; }
+        .tender-card.tektorg-style { border-left: 4px solid #1a73e8; }
+        .tender-card.b2b-style { border-left: 4px solid #00695c; }
+        .tender-card.sberbank-style { border-left: 4px solid #2e7d32; }
+        .tender-card.zakazrf-style { border-left: 4px solid #c62828; }
+        .tender-card.roseltorg-style { border-left: 4px solid #0277bd; }
+        .tender-card.fabrikant-style { border-left: 4px solid #f57f17; }
+        .tender-card.etpgpb-style { border-left: 4px solid #4527a0; }
+        .tender-card.china-style { border-left: 4px solid #e65100; }
+
+        .auction__info { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .auction__badge { padding: 4px 10px; border-radius: 16px; font-size: 12px; font-weight: 600; }
+        .auction__number { background: #e3f2fd; color: #1976d2; }
+        .auction__type-badge { background: #f3e5f5; color: #7b1fa2; }
+        .auction__price-badge { background: #e8f5e9; color: #2e7d32; font-size: 14px; margin-left: auto; }
+        .source-badge { display: inline-block; padding: 3px 10px; border-radius: 16px; font-size: 11px; font-weight: 600; }
+        .badge-rts { background: #e3f2fd; color: #1976d2; }
+        .badge-rutend { background: #f3e5f5; color: #7b1fa2; }
+        .badge-synapse { background: #fff3e0; color: #f57c00; }
+        .badge-tenderpro { background: #e8eaf6; color: #5e35b1; }
+        .badge-rostender { background: #e3f2fd; color: #1565c0; }
+        .badge-tektorg { background: #e8f0fe; color: #1a73e8; }
+        .badge-b2b { background: #e0f2f1; color: #00695c; }
+        .badge-sberbank { background: #e8f5e9; color: #2e7d32; }
+        .badge-zakazrf { background: #fce4ec; color: #c62828; }
+        .badge-roseltorg { background: #e1f5fe; color: #0277bd; }
+        .badge-fabrikant { background: #fff8e1; color: #f57f17; }
+        .badge-etpgpb { background: #ede7f6; color: #4527a0; }
+        .badge-china { background: #fff3e0; color: #e65100; }
+
+        .tender-title { font-size: 16px; font-weight: 600; color: #333; margin-bottom: 10px; }
+        .tender-title a { color: #667eea; text-decoration: none; }
+        .tender-title a:hover { color: #764ba2; text-decoration: underline; }
+        .tender-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #f0f0f0; }
+        .meta-item { font-size: 13px; }
+        .meta-label { color: #999; display: block; margin-bottom: 3px; font-weight: 600; }
+        .meta-value { color: #333; }
+
+        .ml-block { margin-top: 10px; padding: 8px 12px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #475569; border-left: 3px solid #667eea; }
+        .ml-label { font-weight: 600; color: #667eea; }
+        .risk-badge { padding: 2px 8px; border-radius: 4px; font-weight: 600; font-size: 12px; }
+        .risk-low { background: #dcfce7; color: #166534; }
+        .risk-medium { background: #fef9c3; color: #854d0e; }
+        .risk-high { background: #fee2e2; color: #991b1b; }
+
+        .ai-btn {
+            display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border: 1px solid #667eea;
+            border-radius: 8px; background: linear-gradient(135deg, #667eea, #764ba2); color: white;
+            font-size: 12px; font-weight: 600; cursor: pointer; transition: all .2s; margin-top: 8px;
+        }
+        .ai-btn:hover { opacity: .9; transform: translateY(-1px); }
+        .ai-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+        .ai-btn .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #fff3; border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .ai-result { margin-top: 10px; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #f8f9ff, #f0f1ff); border: 1px solid #ddd5ff; font-size: 13px; line-height: 1.6; }
+        .ai-result .ai-title { font-weight: 700; color: #4338ca; margin-bottom: 6px; font-size: 14px; }
+        .ai-rec { display: inline-block; padding: 3px 10px; border-radius: 6px; font-weight: 600; font-size: 12px; margin-bottom: 6px; }
+        .ai-rec-go { background: #dcfce7; color: #166534; }
+        .ai-rec-caution { background: #fef9c3; color: #854d0e; }
+        .ai-rec-stop { background: #fee2e2; color: #991b1b; }
+        .ai-factors { margin: 4px 0; }
+        .ai-factors span { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin: 2px; }
+        .ai-risk-factor { background: #fee2e2; color: #991b1b; }
+        .ai-opportunity { background: #dcfce7; color: #166534; }
+
+        .china-offer-card {
+            background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.06);
+            transition: transform .2s; border: 1px solid #f0f0f0; text-decoration: none; color: inherit;
+        }
+        .china-offer-card:hover { transform: translateY(-3px); }
+        .china-offer-card img { width: 100%; height: 140px; object-fit: cover; }
+        .china-offer-card .offer-body { padding: 10px; }
+        .china-offer-card .offer-title { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .china-offer-card .offer-price { font-size: 15px; font-weight: 700; color: #e65100; }
+        .china-offer-card .offer-shop { font-size: 11px; color: #888; margin-top: 3px; }
+        .china-offers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+        .china-section { background: white; border-radius: 14px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+        .china-section h3 { margin-bottom: 14px; color: #333; font-size: 16px; }
+
+        .logs-panel {
+            background: white; border-radius: 14px; padding: 20px; margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+        }
+        .logs-content {
+            max-height: 250px; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 12px;
+            background: #1e1e2e; color: #cdd6f4; padding: 12px; border-radius: 8px; margin-top: 10px;
+            white-space: pre-wrap; word-break: break-all;
+        }
+
+        .no-results { text-align: center; padding: 50px; background: white; border-radius: 14px; }
+        .no-results-icon { font-size: 48px; margin-bottom: 14px; }
+        .no-results-text { color: #64748b; font-size: 16px; }
+
+        @media (max-width: 768px) {
+            .search-form { flex-direction: column; }
+            .form-group { min-width: 100%; }
+            .navbar { flex-direction: column; gap: 12px; }
+            .nav-left { flex-wrap: wrap; }
+            h1 { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- AUTH OVERLAY -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-card">
+            <h2>Тендеры Pro</h2>
+            <div class="auth-subtitle">Войдите или зарегистрируйтесь для работы</div>
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-mode="login">Вход</div>
+                <div class="auth-tab" data-mode="register">Регистрация</div>
+            </div>
+            <form id="authForm">
+                <div id="authNameField" style="display:none;">
+                    <input class="auth-input" type="text" id="authName" placeholder="Имя (необязательно)">
+                </div>
+                <input class="auth-input" type="email" id="authEmail" placeholder="Email" required>
+                <input class="auth-input" type="password" id="authPassword" placeholder="Пароль" required>
+                <div class="auth-error" id="authError"></div>
+                <button type="submit" class="auth-btn" id="authBtn">Войти</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SUCCESS MODAL -->
+    <div class="modal-overlay" id="searchModal">
+        <div class="modal-card">
+            <div class="modal-icon">🚀</div>
+            <div class="modal-title">Поиск запущен!</div>
+            <div class="modal-text">Заявка создана. Результаты появятся на странице <b>Заявки</b> по мере выполнения.</div>
+            <button class="modal-btn" onclick="closeModal(); showPage('requests');">Перейти к заявкам</button>
+            <button class="modal-btn-secondary" onclick="closeModal();">Новый поиск</button>
+        </div>
+    </div>
+
+    <!-- LIMIT MODAL -->
+    <div class="modal-overlay" id="limitModal">
+        <div class="modal-card">
+            <div class="modal-icon">⚠️</div>
+            <div class="modal-title">Лимит заявок</div>
+            <div class="modal-text" id="limitModalText">Максимум 5 активных заявок. Дождитесь завершения текущих.</div>
+            <button class="modal-btn" onclick="closeLimitModal(); showPage('requests');">К заявкам</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- NAVBAR -->
+        <div class="navbar" id="navbar" style="display:none;">
+            <div class="nav-left">
+                <div class="nav-brand">Тендеры Pro</div>
+                <div class="nav-link active" data-page="search" onclick="showPage('search')">Поиск</div>
+                <div class="nav-link" data-page="requests" onclick="showPage('requests')">Заявки <span id="activeRequestsBadge" style="background:#667eea;color:white;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:4px;display:none;">0</span></div>
+            </div>
+            <div class="nav-user">
+                <span class="nav-user-email" id="navUserEmail"></span>
+                <button class="nav-logout" onclick="logout()">Выйти</button>
+            </div>
+        </div>
+
+        <!-- SEARCH PAGE -->
+        <div class="page-section" id="pageSearch">
+            <div class="header">
+                <h1>Поиск тендеров</h1>
+                <div class="subtitle">Расширенный поиск с ML-предсказаниями, AI-анализом рисков и параллельным парсингом</div>
+                <form class="search-form" id="searchForm" novalidate>
+                    <div class="form-group">
+                        <label for="query">Поисковый запрос</label>
+                        <input type="text" id="query" placeholder="Например: строительство, медоборудование, IT услуги">
+                        <div class="field-error" id="queryError"></div>
+                    </div>
+                    <div class="form-group form-group--short">
+                        <label for="pages">Страниц</label>
+                        <input type="number" id="pages" value="1" min="1" max="10">
+                    </div>
+                    <div class="form-group" style="flex:1 1 100%;min-width:100%;">
+                        <div class="form-section">
+                            <div class="section-title-row">
+                                <div class="section-title">Российские площадки</div>
+                                <button type="button" id="toggleSourcesBtn" class="source-toggle-btn">Выбрать все</button>
+                            </div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="rts" checked> RTS-Tender</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="rutend" checked> RUTEND</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="synapse" checked> Synapse</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="tenderpro" checked> Tender.Pro</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="rostender" checked> РосТендер</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="tektorg" checked> ТЭК-Торг</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="b2b" checked> B2B-Center</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="sberbank_ast" checked> Сбербанк-АСТ</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="zakazrf" checked> ЗаказРФ</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="roseltorg" checked> Росэлторг</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="fabrikant" checked> Фабрикант</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="etpgpb" checked> ЭТП ГПБ</label>
+                            </div>
+                        </div>
+                        <div class="form-section">
+                            <div class="section-title">Зарубежные площадки</div>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="made_in_china" checked> Made-in-China</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="globalsources" checked> Global Sources</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="hktdc_sourcing" checked> HKTDC Sourcing</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="b2bchinasources" checked> B2BChinaSources</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="b2bmap" checked> B2BMAP</label>
+                                <label class="checkbox-label"><input type="checkbox" name="sources" value="dhgate"> DHgate</label>
+                            </div>
+                            <div class="field-error" id="sourcesError"></div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex:1 1 100%;min-width:100%;">
+                        <div class="form-section">
+                            <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                                <div style="flex:0 1 300px;min-width:220px;">
+                                    <label for="dateFrom" style="min-height:32px;font-size:12px;color:#64748b;">Активны с</label>
+                                    <input type="date" id="dateFrom" style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;background:#fafafa;">
+                                </div>
+                                <div style="flex:0 1 300px;min-width:220px;">
+                                    <label for="dateTo" style="min-height:32px;font-size:12px;color:#64748b;">Активны до</label>
+                                    <input type="date" id="dateTo" style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;background:#fafafa;">
+                                </div>
+                                <div style="flex:0 1 240px;min-width:200px;">
+                                    <label for="minDaysLeft" style="min-height:32px;font-size:12px;color:#64748b;">Окончание не раньше чем через (дней)</label>
+                                    <input type="number" id="minDaysLeft" min="0" max="365" style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:14px;background:#fafafa;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="flex:1 1 100%;min-width:100%;padding-top:8px;">
+                        <button type="submit" class="btn-primary" id="searchBtn">Начать поиск</button>
+                        <div class="form-error" id="formError"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- REQUESTS PAGE -->
+        <div class="page-section" id="pageRequests">
+            <div class="requests-header">
+                <h2>Мои заявки</h2>
+                <button class="btn-primary" style="padding:10px 24px;font-size:14px;" onclick="showPage('search')">+ Новый поиск</button>
+            </div>
+            <div id="requestsList"></div>
+        </div>
+
+        <!-- REQUEST DETAIL PAGE -->
+        <div class="page-section" id="pageDetail">
+            <button class="detail-back" onclick="showPage('requests')">← Назад к заявкам</button>
+            <div id="detailHeader"></div>
+            <div id="detailStats" class="stats" style="display:none;"></div>
+            <div id="detailFilters" class="filters" style="display:none;"></div>
+            <div id="detailLogs" style="display:none;"></div>
+            <div class="results" id="detailResults"></div>
+        </div>
+    </div>
+
+<script>
+const API = (() => {
+    const configured = localStorage.getItem('API_BASE_URL');
+    if (configured) return configured.replace(/\/+$/, '');
+    if (window.location.port === '5500') return 'http://127.0.0.1:8001';
+    return window.location.origin;
+})();
+
+let token = localStorage.getItem('token') || '';
+let userEmail = localStorage.getItem('userEmail') || '';
+let authMode = 'login';
+let currentPage = 'search';
+let requestsPollingId = null;
+let detailPollingId = null;
+let currentDetailId = null;
+let detailTenders = [];
+let detailFilter = 'all';
+
+const SOURCE_MAP = {
+    'rts':{sources:['RTS-TENDER'],badge:'badge-rts',card:'rts-style'},
+    'rutend':{sources:['RUTEND','RUTEND.RU'],badge:'badge-rutend',card:'rutend-style'},
+    'synapse':{sources:['SYNAPSE'],badge:'badge-synapse',card:'synapse-style'},
+    'tenderpro':{sources:['TENDER.PRO'],badge:'badge-tenderpro',card:'tenderpro-style'},
+    'rostender':{sources:['ROSTENDER'],badge:'badge-rostender',card:'rostender-style'},
+    'tektorg':{sources:['TEKTORG'],badge:'badge-tektorg',card:'tektorg-style'},
+    'b2b':{sources:['B2B-CENTER'],badge:'badge-b2b',card:'b2b-style'},
+    'sberbank_ast':{sources:['SBERBANK-AST','СБЕРБАНК-АСТ'],badge:'badge-sberbank',card:'sberbank-style'},
+    'zakazrf':{sources:['ZAKAZRF','ЗАКАЗРФ'],badge:'badge-zakazrf',card:'zakazrf-style'},
+    'roseltorg':{sources:['ROSELTORG','РОСЭЛТОРГ'],badge:'badge-roseltorg',card:'roseltorg-style'},
+    'fabrikant':{sources:['FABRIKANT','ФАБРИКАНТ'],badge:'badge-fabrikant',card:'fabrikant-style'},
+    'etpgpb':{sources:['ETP-GPB','ЭТП ГПБ'],badge:'badge-etpgpb',card:'etpgpb-style'},
+    'made_in_china':{sources:['MADE-IN-CHINA.COM'],badge:'badge-china',card:'china-style'},
+    'globalsources':{sources:['GLOBALSOURCES','GLOBAL SOURCES'],badge:'badge-china',card:'china-style'},
+    'hktdc':{sources:['HKTDC','HKTDC SOURCING'],badge:'badge-china',card:'china-style'},
+    'b2bcs':{sources:['B2BCHINASOURCES'],badge:'badge-china',card:'china-style'},
+    'b2bmap':{sources:['B2BMAP'],badge:'badge-china',card:'china-style'},
+    'dhgate':{sources:['DHGATE','DHGATE.COM'],badge:'badge-china',card:'china-style'},
+};
+const CHINA_SOURCES = ['MADE-IN-CHINA.COM','DHGATE','DHGATE.COM','GLOBALSOURCES','GLOBAL SOURCES','HKTDC','HKTDC SOURCING','B2BCHINASOURCES','B2BMAP'];
+function isChina(s){ return CHINA_SOURCES.includes((s||'').toUpperCase()); }
+function getSourceStyle(s){
+    const u=(s||'').toUpperCase();
+    for(const k in SOURCE_MAP) if(SOURCE_MAP[k].sources.some(n=>u===n||u.includes(n))) return SOURCE_MAP[k];
+    return {badge:'badge-rutend',card:'rutend-style'};
+}
+function esc(t){ if(!t)return''; const d=document.createElement('div'); d.textContent=String(t); return d.innerHTML; }
+function formatPrice(v){ if(v==null||v==='')return null; const n=typeof v==='number'?v:parseFloat(v); if(isNaN(n))return null; return n.toLocaleString('ru-RU',{maximumFractionDigits:0})+' ₽'; }
+function getRiskClass(r){ const v=parseFloat(r); if(isNaN(v))return''; return v<0.4?'risk-low':v<=0.7?'risk-medium':'risk-high'; }
+
+async function apiFetch(path, opts={}){
+    const headers = {'Content-Type':'application/json',...(opts.headers||{})};
+    if(token) headers['Authorization'] = 'Bearer '+token;
+    const resp = await fetch(API+path, {...opts, headers});
+    if(resp.status===401){ logout(); throw new Error('Сессия истекла'); }
+    return resp;
+}
+
+// AUTH
+function initAuth(){
+    if(token){ checkAuth(); return; }
+    showAuth();
+}
+function showAuth(){ document.getElementById('authOverlay').classList.remove('hidden'); document.getElementById('navbar').style.display='none'; }
+function hideAuth(){ document.getElementById('authOverlay').classList.add('hidden'); document.getElementById('navbar').style.display='flex'; }
+async function checkAuth(){
+    try{
+        const r=await apiFetch('/api/users/me'); const d=await r.json();
+        if(d.email){ userEmail=d.email; hideAuth(); updateNav(); showPage('search'); loadRequests(); }
+        else{ logout(); }
+    }catch(e){ showAuth(); }
+}
+function logout(){ token=''; userEmail=''; localStorage.removeItem('token'); localStorage.removeItem('userEmail'); showAuth(); stopPolling(); }
+function updateNav(){ document.getElementById('navUserEmail').textContent=userEmail; }
+
+document.querySelectorAll('.auth-tab').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+        authMode=tab.dataset.mode;
+        document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById('authNameField').style.display=authMode==='register'?'block':'none';
+        document.getElementById('authBtn').textContent=authMode==='register'?'Зарегистрироваться':'Войти';
+        document.getElementById('authError').textContent='';
+    });
+});
+
+document.getElementById('authForm').addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    const email=document.getElementById('authEmail').value.trim();
+    const password=document.getElementById('authPassword').value;
+    const name=document.getElementById('authName').value.trim();
+    const errEl=document.getElementById('authError');
+    errEl.textContent='';
+    if(!email||!password){ errEl.textContent='Заполните email и пароль'; return; }
+    const btn=document.getElementById('authBtn'); btn.disabled=true;
+    try{
+        const endpoint=authMode==='register'?'/api/users/register':'/api/users/login';
+        const body=authMode==='register'?{email,password,name}:{email,password};
+        const r=await fetch(API+endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const d=await r.json();
+        if(r.ok&&d.access_token){
+            token=d.access_token; userEmail=d.email||email;
+            localStorage.setItem('token',token); localStorage.setItem('userEmail',userEmail);
+            hideAuth(); updateNav(); showPage('search'); loadRequests();
+        } else { errEl.textContent=d.detail||d.error||'Ошибка'; }
+    }catch(err){ errEl.textContent='Ошибка подключения'; }
+    finally{ btn.disabled=false; }
+});
+
+// PAGES
+function showPage(page){
+    currentPage=page; stopPolling();
+    document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active',l.dataset.page===page));
+    if(page==='search') document.getElementById('pageSearch').classList.add('active');
+    else if(page==='requests'){ document.getElementById('pageRequests').classList.add('active'); loadRequests(); startRequestsPolling(); }
+    else if(page==='detail'){ document.getElementById('pageDetail').classList.add('active'); }
+}
+function stopPolling(){ if(requestsPollingId){clearInterval(requestsPollingId);requestsPollingId=null;} if(detailPollingId){clearInterval(detailPollingId);detailPollingId=null;} }
+function startRequestsPolling(){ stopPolling(); requestsPollingId=setInterval(loadRequests,4000); }
+
+// SEARCH
+document.getElementById('searchForm').addEventListener('submit',async(e)=>{
+    e.preventDefault();
+    const query=document.getElementById('query').value.trim();
+    const pages=parseInt(document.getElementById('pages').value)||1;
+    const sources=Array.from(document.querySelectorAll('input[name="sources"]:checked')).map(c=>c.value);
+    const dateFrom=document.getElementById('dateFrom').value||null;
+    const dateTo=document.getElementById('dateTo').value||null;
+    const minDaysLeft=parseInt(document.getElementById('minDaysLeft').value)||null;
+    const errEl=document.getElementById('formError');
+    errEl.textContent='';
+    document.getElementById('queryError').textContent='';
+    document.getElementById('sourcesError').textContent='';
+    if(!query){document.getElementById('queryError').textContent='Введите запрос';return;}
+    if(!sources.length){document.getElementById('sourcesError').textContent='Выберите хотя бы одну площадку';return;}
+    const btn=document.getElementById('searchBtn'); btn.disabled=true;
+    try{
+        const r=await apiFetch('/api/search',{method:'POST',body:JSON.stringify({query,pages,sources,date_from:dateFrom,date_to:dateTo,min_days_left:minDaysLeft})});
+        const d=await r.json();
+        if(r.ok){
+            document.getElementById('searchModal').classList.add('active');
+        } else if(r.status===429){
+            document.getElementById('limitModalText').textContent=d.detail||'Лимит заявок';
+            document.getElementById('limitModal').classList.add('active');
+        } else { errEl.textContent=d.detail||'Ошибка'; }
+    }catch(err){ errEl.textContent='Ошибка подключения: '+err.message; }
+    finally{ btn.disabled=false; }
+});
+
+function closeModal(){ document.getElementById('searchModal').classList.remove('active'); }
+function closeLimitModal(){ document.getElementById('limitModal').classList.remove('active'); }
+
+// TOGGLE SOURCES
+const tBtn=document.getElementById('toggleSourcesBtn');
+function updateToggle(){
+    const cbs=Array.from(document.querySelectorAll('input[name="sources"]')).filter(c=>!c.disabled);
+    tBtn.textContent=cbs.every(c=>c.checked)?'Снять все':'Выбрать все';
+}
+tBtn.addEventListener('click',()=>{
+    const cbs=Array.from(document.querySelectorAll('input[name="sources"]')).filter(c=>!c.disabled);
+    const next=!cbs.every(c=>c.checked); cbs.forEach(c=>c.checked=next); updateToggle();
+});
+document.querySelectorAll('input[name="sources"]').forEach(c=>c.addEventListener('change',updateToggle));
+updateToggle();
+
+// REQUESTS
+async function loadRequests(){
+    try{
+        const r=await apiFetch('/api/requests'); const d=await r.json();
+        const items=d.requests||[];
+        const active=items.filter(i=>i.status==='pending'||i.status==='running').length;
+        const badge=document.getElementById('activeRequestsBadge');
+        if(active>0){badge.textContent=active;badge.style.display='inline';}else{badge.style.display='none';}
+        renderRequests(items);
+    }catch(e){ console.error(e); }
+}
+
+function renderRequests(items){
+    const el=document.getElementById('requestsList');
+    if(!items.length){ el.innerHTML=`<div class="request-empty"><div class="request-empty-icon">📋</div><div class="request-empty-text">Заявок пока нет</div><button class="btn-primary" style="padding:10px 24px;font-size:14px;" onclick="showPage('search')">Создать поиск</button></div>`; return; }
+    el.innerHTML=items.map(r=>{
+        const statusLabels={pending:'Ожидание',running:'Выполняется',completed:'Завершено',error:'Ошибка'};
+        const statusLabel=statusLabels[r.status]||r.status;
+        const dateStr=r.created_at?new Date(r.created_at).toLocaleString('ru-RU'):'';
+        return `<div class="request-card status-${esc(r.status)}" onclick="openDetail(${r.id})">
+            <div class="request-top">
+                <div class="request-query">${esc(r.query)}</div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="request-status status-badge-${esc(r.status)}">${esc(statusLabel)}</span>
+                    <button class="request-delete" onclick="event.stopPropagation();deleteRequest(${r.id})">✕</button>
+                </div>
+            </div>
+            <div class="request-meta">
+                <span>Источники: ${(r.sources||[]).length}</span>
+                <span>Результатов: ${r.total_results||0}</span>
+                <span>${dateStr}</span>
+            </div>
+            ${r.status==='running'?`<div class="request-progress"><div class="request-progress-fill" style="width:${r.progress||0}%"></div></div>`:''}
+        </div>`;
+    }).join('');
+}
+
+async function deleteRequest(id){
+    if(!confirm('Удалить заявку и все найденные тендеры?'))return;
+    try{ await apiFetch(`/api/requests/${id}`,{method:'DELETE'}); loadRequests(); }catch(e){}
+}
+
+// DETAIL
+async function openDetail(id){
+    currentDetailId=id; detailFilter='all';
+    showPage('detail');
+    loadDetail();
+    detailPollingId=setInterval(loadDetail,3000);
+}
+
+async function loadDetail(){
+    if(!currentDetailId)return;
+    try{
+        const r=await apiFetch(`/api/requests/${currentDetailId}`);
+        const d=await r.json();
+        renderDetail(d);
+        if(d.status==='completed'||d.status==='error'){
+            if(detailPollingId){clearInterval(detailPollingId);detailPollingId=null;}
+        }
+    }catch(e){}
+}
+
+function renderDetail(data){
+    const statusLabels={pending:'Ожидание',running:'Выполняется...',completed:'Завершено',error:'Ошибка'};
+    const dateStr=data.created_at?new Date(data.created_at).toLocaleString('ru-RU'):'';
+    document.getElementById('detailHeader').innerHTML=`
+        <div class="requests-header" style="margin-bottom:16px;">
+            <div>
+                <h2 style="margin-bottom:4px;">${esc(data.query)}</h2>
+                <div style="font-size:13px;color:#64748b;">${dateStr} · <span class="request-status status-badge-${esc(data.status)}">${statusLabels[data.status]||data.status}</span></div>
+            </div>
+            <div style="font-size:14px;color:#64748b;">Результатов: <b>${data.total_results||0}</b></div>
+        </div>
+        ${data.status==='running'?`<div class="request-progress" style="margin-bottom:16px;height:6px;"><div class="request-progress-fill" style="width:${data.progress||0}%"></div></div>`:''}
+    `;
+    if(data.logs&&data.logs.length&&(data.status==='running'||data.status==='pending')){
+        document.getElementById('detailLogs').style.display='block';
+        document.getElementById('detailLogs').innerHTML=`<div class="logs-panel"><h3>Логи</h3><div class="logs-content">${esc(data.logs.join('\n'))}</div></div>`;
+    } else { document.getElementById('detailLogs').style.display='none'; }
+
+    detailTenders=data.results||[];
+    if(data.status==='completed'&&detailTenders.length>0){
+        renderDetailStats(detailTenders);
+        renderDetailFilters();
+        filterDetailTenders();
+    } else if(data.status==='error'){
+        document.getElementById('detailResults').innerHTML=`<div style="background:#fee2e2;padding:20px;border-radius:10px;color:#991b1b;"><b>Ошибка:</b> ${esc(data.error)}</div>`;
+    } else if(data.status==='completed'&&detailTenders.length===0){
+        document.getElementById('detailResults').innerHTML=`<div class="no-results"><div class="no-results-icon">📭</div><div class="no-results-text">Тендеры не найдены</div></div>`;
+    }
+}
+
+function countByFilter(tenders,filterKey){
+    const info=SOURCE_MAP[filterKey]; if(!info)return 0;
+    return tenders.filter(t=>info.sources.some(s=>(t.source||'').toUpperCase()===s||(t.source||'').toUpperCase().includes(s))).length;
+}
+
+function renderDetailStats(tenders){
+    const el=document.getElementById('detailStats'); el.style.display='grid';
+    const counts=[{id:'total',label:'Всего',count:tenders.length}];
+    for(const key in SOURCE_MAP){ const c=countByFilter(tenders,key); if(c>0) counts.push({id:key,label:SOURCE_MAP[key].sources[0],count:c}); }
+    el.innerHTML=counts.map(c=>`<div class="stat-card"><div class="stat-value">${c.count}</div><div class="stat-label">${esc(c.label)}</div></div>`).join('');
+}
+
+function renderDetailFilters(){
+    const el=document.getElementById('detailFilters'); el.style.display='block';
+    let tabs=[{key:'all',label:'Все'}];
+    for(const key in SOURCE_MAP){ if(countByFilter(detailTenders,key)>0) tabs.push({key,label:SOURCE_MAP[key].sources[0]}); }
+    el.innerHTML=`<div class="filter-tabs">${tabs.map(t=>`<div class="filter-tab${t.key===detailFilter?' active':''}" data-filter="${t.key}">${esc(t.label)}</div>`).join('')}</div>`;
+    el.querySelectorAll('.filter-tab').forEach(tab=>{
+        tab.addEventListener('click',()=>{ detailFilter=tab.dataset.filter; el.querySelectorAll('.filter-tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===detailFilter)); filterDetailTenders(); });
+    });
+}
+
+function filterDetailTenders(){
+    if(detailFilter==='all'){ renderTenders(detailTenders,'detailResults'); return; }
+    const info=SOURCE_MAP[detailFilter]; if(!info){renderTenders(detailTenders,'detailResults');return;}
+    renderTenders(detailTenders.filter(t=>info.sources.some(s=>(t.source||'').toUpperCase()===s||(t.source||'').toUpperCase().includes(s))),'detailResults');
+}
+
+window._aiTenderData={};
+window._tenderIndex=0;
+
+function renderTenders(tenders,containerId){
+    const el=document.getElementById(containerId);
+    window._tenderIndex=0; window._aiTenderData={};
+    if(!tenders.length){ el.innerHTML=`<div class="no-results"><div class="no-results-icon">📭</div><div class="no-results-text">Тендеры не найдены</div></div>`; return; }
+    const china=tenders.filter(t=>isChina(t.source));
+    const regular=tenders.filter(t=>!isChina(t.source));
+    let html='';
+    if(regular.length){
+        html+=regular.map(tender=>{
+            const style=getSourceStyle(tender.source);
+            const pp=tender.predicted_price!=null?formatPrice(tender.predicted_price):null;
+            const risk=tender.risk_score!=null?parseFloat(tender.risk_score):null;
+            const rep=tender.customer_reputation!=null?parseFloat(tender.customer_reputation):null;
+            let ml=[];
+            if(pp)ml.push('Прогноз контракта: '+pp+' <span style="font-size:10px;color:#94a3b8;">(после торгов)</span>');
+            if(risk!=null&&!isNaN(risk))ml.push('Риск: <span class="risk-badge '+getRiskClass(risk)+'">'+risk.toFixed(2)+'</span>');
+            if(rep!=null&&!isNaN(rep))ml.push('Репутация: '+rep.toFixed(2));
+            const mlHtml=ml.length?'<div class="ml-block"><span class="ml-label">ML:</span> '+ml.join(' | ')+'</div>':'';
+            const tIdx=window._tenderIndex++;
+            const aiId='ai-'+tIdx;
+            window._aiTenderData[aiId]={title:tender.title||'',price:tender.price||'',customer:tender.customer||'',law_type:tender.law_type||'',purchase_type:tender.purchase_type||'',deadline:tender.deadline||'',region:tender.region||'',source:tender.source||''};
+            return `<div class="tender-card ${style.card}">
+                <div class="auction__info">
+                    ${tender.law_type?`<span class="auction__badge auction__number">${esc(tender.law_type)}</span>`:''}
+                    ${tender.purchase_type?`<span class="auction__badge auction__type-badge">${esc(tender.purchase_type)}</span>`:''}
+                    ${tender.price?`<span class="auction__badge auction__price-badge">${esc(tender.price)}</span>`:''}
+                    <span class="source-badge ${style.badge}">${esc(tender.source)}</span>
+                </div>
+                <div class="tender-title"><a href="${tender.url||'#'}" target="_blank">${esc(tender.title||'')}</a></div>
+                <div class="tender-meta">
+                    ${tender.tender_id?`<div class="meta-item"><span class="meta-label">ID:</span><span class="meta-value">#${esc(tender.tender_id)}</span></div>`:''}
+                    ${tender.customer?`<div class="meta-item"><span class="meta-label">Заказчик:</span><span class="meta-value">${esc(tender.customer)}</span></div>`:''}
+                    ${tender.organizer?`<div class="meta-item"><span class="meta-label">Организатор:</span><span class="meta-value">${esc(tender.organizer)}</span></div>`:''}
+                    ${tender.region?`<div class="meta-item"><span class="meta-label">Регион:</span><span class="meta-value">${esc(tender.region)}</span></div>`:''}
+                    ${tender.publish_date?`<div class="meta-item"><span class="meta-label">Опубликовано:</span><span class="meta-value" style="color:#1976d2;">${esc(tender.publish_date)}</span></div>`:''}
+                    ${tender.deadline?`<div class="meta-item"><span class="meta-label">Срок подачи:</span><span class="meta-value" style="color:#d32f2f;font-weight:bold;">${esc(tender.deadline)}</span></div>`:''}
+                    ${tender.status?`<div class="meta-item"><span class="meta-label">Статус:</span><span class="meta-value">${esc(tender.status)}</span></div>`:''}
+                </div>
+                ${mlHtml}
+                <button class="ai-btn" data-ai-id="${aiId}" onclick="runAiAnalysis(this)">🤖 AI-анализ рисков</button>
+                <div id="${aiId}" style="display:none;"></div>
+            </div>`;
+        }).join('');
+    }
+    if(china.length){
+        html+=`<div class="china-section"><h3>Зарубежные площадки (${china.length})</h3><div class="china-offers-grid">
+            ${china.map(o=>`<a href="${o.url||'#'}" target="_blank" class="china-offer-card">
+                ${o.image_url?`<img src="${esc(o.image_url)}" onerror="this.style.display='none'">`:'<div style="height:30px;background:#f5f5f5;"></div>'}
+                <div class="offer-body">
+                    <div class="offer-title">${esc(o.title||'')}</div>
+                    <div class="offer-price">${esc(o.price||o.price_cny||'')}${o.price_rub?' / '+esc(o.price_rub):''}</div>
+                    ${o.shop_name?`<div class="offer-shop">${esc(o.shop_name)}</div>`:''}
+                    <span class="source-badge badge-china" style="margin:4px 0 0;display:inline-block;">${esc(o.source||'')}</span>
+                </div></a>`).join('')}
+        </div></div>`;
+    }
+    el.innerHTML=html;
+}
+
+async function runAiAnalysis(btn){
+    const aiId=btn.dataset.aiId;
+    const tender=(window._aiTenderData||{})[aiId]; if(!tender)return;
+    const rd=document.getElementById(aiId); if(!rd)return;
+    btn.disabled=true; btn.innerHTML='<span class="spinner"></span> Анализирую...'; rd.style.display='none';
+    try{
+        const r=await apiFetch('/api/ai/analyze',{method:'POST',body:JSON.stringify(tender)});
+        const d=await r.json();
+        const recClass=d.recommendation==='участвовать'?'ai-rec-go':d.recommendation==='не рекомендуется'?'ai-rec-stop':'ai-rec-caution';
+        const recIcon=d.recommendation==='участвовать'?'✅':d.recommendation==='не рекомендуется'?'🚫':'⚠️';
+        let rf=''; if(d.risk_factors&&d.risk_factors.length) rf='<div class="ai-factors"><strong>Риски:</strong> '+d.risk_factors.map(f=>'<span class="ai-risk-factor">'+esc(f)+'</span>').join('')+'</div>';
+        let op=''; if(d.opportunities&&d.opportunities.length) op='<div class="ai-factors"><strong>Возможности:</strong> '+d.opportunities.map(f=>'<span class="ai-opportunity">'+esc(f)+'</span>').join('')+'</div>';
+        const sc=d.ai_risk_score!=null?' | AI-риск: <span class="risk-badge '+getRiskClass(d.ai_risk_score)+'">'+parseFloat(d.ai_risk_score).toFixed(2)+'</span>':'';
+        rd.innerHTML=`<div class="ai-result"><div class="ai-title">🤖 AI-анализ</div><div><span class="ai-rec ${recClass}">${recIcon} ${esc(d.recommendation||'')}</span>${sc}</div><div style="margin:6px 0;">${esc(d.risk_analysis||'')}</div>${rf}${op}</div>`;
+        rd.style.display='block'; btn.innerHTML='🤖 Анализ готов ✓';
+    }catch(err){ rd.innerHTML='<div class="ai-result" style="border-color:#fee2e2;">Ошибка: '+esc(err.message)+'</div>'; rd.style.display='block'; btn.disabled=false; btn.innerHTML='🤖 AI-анализ рисков'; }
+}
+
+// INIT
+initAuth();
+</script>
+</body>
+</html>
