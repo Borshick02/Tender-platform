@@ -1,23 +1,38 @@
 """Модели БД."""
-from datetime import datetime
+import json
+from datetime import datetime, timedelta, timezone
 from sqlalchemy import Column, Integer, String, Float, Text, DateTime, ForeignKey, Boolean
-from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
+
+MSK = timezone(timedelta(hours=3))
+
+
+def _now_msk():
+    return datetime.now(MSK)
+
+
+def _load_json_list(raw):
+    """Безопасно читает JSON-список из текстового поля БД."""
+    try:
+        data = json.loads(raw or "[]")
+    except (json.JSONDecodeError, TypeError):
+        return []
+    return data if isinstance(data, list) else []
+
 
 Base = declarative_base()
 
 
 class Tender(Base):
-    """Тендер."""
     __tablename__ = "tenders"
 
     id = Column(Integer, primary_key=True, index=True)
-    tender_id = Column(String(128), index=True)  # ID на площадке
+    tender_id = Column(String(128), index=True)
     title = Column(String(1024), nullable=False)
     url = Column(String(2048))
     source = Column(String(64), index=True)
-    price_raw = Column(String(128))  # Оригинальная строка цены
-    price_numeric = Column(Float)  # Числовое значение для ML
+    price_raw = Column(String(128))
+    price_numeric = Column(Float)
     customer = Column(String(512))
     organizer = Column(String(512))
     law_type = Column(String(64))
@@ -27,14 +42,15 @@ class Tender(Base):
     region = Column(String(256))
     platform = Column(String(256))
     publish_date = Column(String(128))
-    extra = Column(Text)  # JSON с доп. полями
-    created_at = Column(DateTime, default=datetime.utcnow)
-    search_query = Column(String(256), index=True)  # Запрос, по которому найден
+    extra = Column(Text)
+    created_at = Column(DateTime, default=_now_msk)
+    search_query = Column(String(256), index=True)
 
-    # ML-поля
     predicted_price = Column(Float)
-    risk_score = Column(Float)  # 0–1, риск «подставного» тендера
-    customer_reputation = Column(Float)  # 0–1, репутация заказчика
+    risk_score = Column(Float)
+    customer_reputation = Column(Float)
+
+    request_id = Column(Integer, ForeignKey("search_requests.id"), nullable=True, index=True)
 
     def to_dict(self):
         d = {
@@ -65,7 +81,6 @@ class Tender(Base):
 
 
 class User(Base):
-    """Пользователь."""
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -73,14 +88,75 @@ class User(Base):
     hashed_password = Column(String(256), nullable=False)
     name = Column(String(256))
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=_now_msk)
+
+    requests = relationship("SearchRequest", back_populates="user", lazy="dynamic")
+
+
+class SearchRequest(Base):
+    """Заявка на поиск, привязанная к пользователю."""
+    __tablename__ = "search_requests"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    query = Column(String(512), nullable=False)
+    pages = Column(Integer, default=1)
+    sources_json = Column(Text, default="[]")
+    date_from = Column(String(32), nullable=True)
+    date_to = Column(String(32), nullable=True)
+    min_days_left = Column(Integer, nullable=True)
+
+    status = Column(String(32), default="pending", index=True)  # pending / running / completed / error
+    progress = Column(Integer, default=0)
+    total_results = Column(Integer, default=0)
+    error = Column(Text, nullable=True)
+    logs_json = Column(Text, default="[]")
+
+    created_at = Column(DateTime, default=_now_msk)
+    finished_at = Column(DateTime, nullable=True)
+
+    user = relationship("User", back_populates="requests")
+    tenders = relationship("Tender", backref="search_request", lazy="dynamic")
+
+    @property
+    def sources(self):
+        return _load_json_list(self.sources_json)
+
+    @sources.setter
+    def sources(self, val):
+        self.sources_json = json.dumps(val or [], ensure_ascii=False)
+
+    @property
+    def logs(self):
+        return _load_json_list(self.logs_json)
+
+    @logs.setter
+    def logs(self, val):
+        self.logs_json = json.dumps(val or [], ensure_ascii=False)
+
+    def to_dict(self, include_results=False):
+        d = {
+            "id": self.id,
+            "query": self.query,
+            "pages": self.pages,
+            "sources": self.sources,
+            "status": self.status,
+            "progress": self.progress,
+            "total_results": self.total_results,
+            "error": self.error,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "finished_at": self.finished_at.isoformat() if self.finished_at else None,
+        }
+        if include_results:
+            d["results"] = [t.to_dict() for t in self.tenders.all()]
+            d["logs"] = self.logs[-100:]
+        return d
 
 
 class Favorite(Base):
-    """Избранные тендеры пользователя."""
     __tablename__ = "favorites"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     tender_id = Column(Integer, ForeignKey("tenders.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=_now_msk)
