@@ -131,46 +131,6 @@
             accent-color: #667eea;
             flex-shrink: 0;
         }
-        .section-title-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .source-toggle-btn {
-            border: 1px solid #e2e8f0;
-            background: #ffffff;
-            color: #475569;
-            border-radius: 10px;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .2s;
-            white-space: nowrap;
-        }
-        .source-toggle-btn:hover {
-            background: #f8fafc;
-            border-color: #cbd5e1;
-        }
-        .field-invalid {
-            border-color: #dc2626 !important;
-            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
-        }
-        .field-error {
-            margin-top: 6px;
-            color: #dc2626;
-            font-size: 12px;
-            min-height: 16px;
-        }
-        .form-error {
-            margin-top: 10px;
-            color: #dc2626;
-            font-size: 13px;
-            font-weight: 500;
-            min-height: 18px;
-        }
 
         button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -345,6 +305,90 @@
         .tender-card.fabrikant-style { border-left: 4px solid #f57f17; }
         .tender-card.etpgpb-style { border-left: 4px solid #4527a0; }
         .tender-card.china-style { border-left: 4px solid #e65100; }
+        .badge-goszakup-kz {
+            background: #e0f2f1;
+            color: #00695c;
+        }
+        .tender-card.goszakup-kz-style { border-left: 4px solid #00897b; }
+        .fav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 2px 6px;
+            border-radius: 6px;
+            transition: transform 0.15s, opacity 0.15s;
+            line-height: 1;
+            opacity: 0.45;
+            flex-shrink: 0;
+        }
+        .fav-btn:hover { opacity: 1; transform: scale(1.2); }
+        .fav-btn.fav-active { opacity: 1; }
+        .fav-cabinet {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            display: none;
+        }
+        .fav-cabinet.fav-visible { display: block; }
+        .fav-cabinet-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .fav-cabinet-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin: 0;
+        }
+        .fav-clear-btn {
+            background: #fee2e2;
+            color: #991b1b;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .fav-clear-btn:hover { background: #fecaca; }
+        .fav-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #94a3b8;
+            font-size: 15px;
+        }
+        .fav-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            margin-bottom: 0;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+        }
+        .fav-toggle-btn:hover, .fav-toggle-btn.fav-toggle-active {
+            border-color: #f59e0b;
+            color: #b45309;
+            background: #fffbeb;
+        }
+        .fav-count-badge {
+            background: #fef3c7;
+            color: #b45309;
+            border-radius: 10px;
+            padding: 1px 7px;
+            font-size: 12px;
+        }
 
         .china-offer-card {
             background: white;
@@ -663,78 +707,21 @@
         .risk-low { background: #dcfce7; color: #166534; }
         .risk-medium { background: #fef9c3; color: #854d0e; }
         .risk-high { background: #fee2e2; color: #991b1b; }
-
-        .selection-toolbar {
-            display: none;
-            margin-bottom: 14px;
-            justify-content: flex-end;
-        }
-        .selection-toolbar.active {
-            display: flex;
-        }
-        .select-all-btn {
-            border: 1px solid #dbe4ff;
-            background: #eef2ff;
-            color: #3742a5;
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .2s;
-        }
-        .select-all-btn:hover {
-            background: #e0e7ff;
-        }
-        .tender-select {
-            width: 18px;
-            height: 18px;
-            accent-color: #667eea;
-            cursor: pointer;
-            margin-right: 10px;
-            flex-shrink: 0;
-        }
-
-        .ai-btn {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 6px 14px; border: 1px solid #667eea; border-radius: 8px;
-            background: linear-gradient(135deg, #667eea, #764ba2); color: white;
-            font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-            margin-top: 8px;
-        }
-        .ai-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .ai-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-        .ai-btn .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #fff3; border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .ai-result {
-            margin-top: 10px; padding: 14px; border-radius: 10px;
-            background: linear-gradient(135deg, #f8f9ff, #f0f1ff); border: 1px solid #ddd5ff;
-            font-size: 13px; line-height: 1.6;
-        }
-        .ai-result .ai-title { font-weight: 700; color: #4338ca; margin-bottom: 8px; font-size: 14px; }
-        .ai-result .ai-rec {
-            display: inline-block; padding: 3px 10px; border-radius: 6px; font-weight: 600; font-size: 12px; margin-bottom: 8px;
-        }
-        .ai-rec-go { background: #dcfce7; color: #166534; }
-        .ai-rec-caution { background: #fef9c3; color: #854d0e; }
-        .ai-rec-stop { background: #fee2e2; color: #991b1b; }
-        .ai-factors { margin: 6px 0; }
-        .ai-factors span { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; margin: 2px 3px; }
-        .ai-risk-factor { background: #fee2e2; color: #991b1b; }
-        .ai-opportunity { background: #dcfce7; color: #166534; }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Header -->
         <div class="header">
-        <h1>Тендеры Pro</h1>
+        <h1>🔍 Тендеры Pro</h1>
         <div class="subtitle">
-            Расширенный поиск спредсказание цены, риском и репутацией заказчика
+            Поиск с сохранением в PostgreSQL, API и ML-аналитикой (предсказание цены, риск, репутация заказчика)
+        </div>
+        <div style="margin-bottom: 20px;">
+            <a href="http://localhost:8000/" style="color: #667eea; font-weight: 600; text-decoration: none; font-size: 14px;">← Базовая версия</a>
         </div>
 
-            <form class="search-form" id="searchForm" novalidate>
+            <form class="search-form" id="searchForm">
                 <div class="form-group">
                     <label for="query">Поисковый запрос</label>
                     <input
@@ -742,8 +729,8 @@
                         id="query"
                         name="query"
                         placeholder="Например: строительство, медоборудование, IT услуги"
+                        required
                     >
-                    <div class="field-error" id="queryError"></div>
                 </div>
                 <div class="form-group form-group--short">
                     <label for="pages">Страниц</label>
@@ -759,10 +746,7 @@
 
                 <div class="form-group" style="flex: 1 1 100%; min-width: 100%;">
                     <div class="form-section">
-                        <div class="section-title-row">
-                            <div class="section-title">Российские площадки</div>
-                            <button type="button" id="toggleSourcesBtn" class="source-toggle-btn">Выбрать все площадки</button>
-                        </div>
+                        <div class="section-title">Российские площадки</div>
                         <div class="checkbox-group">
                             <label class="checkbox-label"><input type="checkbox" name="sources" value="rts" checked> RTS-Tender</label>
                             <label class="checkbox-label"><input type="checkbox" name="sources" value="rutend" checked> RUTEND</label>
@@ -779,50 +763,37 @@
                         </div>
                     </div>
                     <div class="form-section">
-                        <div class="section-title">Зарубежные площадки</div>
+                        <div class="section-title">Казахстанские площадки</div>
                         <div class="checkbox-group">
-                            <label class="checkbox-label"><input type="checkbox" name="sources" value="made_in_china" checked> Made-in-China</label>
-                            <label class="checkbox-label"><input type="checkbox" name="sources" value="globalsources" checked> Global Sources</label>
-                            <label class="checkbox-label"><input type="checkbox" name="sources" value="hktdc_sourcing" checked> HKTDC Sourcing</label>
-                            <label class="checkbox-label"><input type="checkbox" name="sources" value="b2bchinasources" checked> B2BChinaSources</label>
-                            <label class="checkbox-label"><input type="checkbox" name="sources" value="b2bmap" checked> B2BMAP</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sources" value="goszakup_kz" checked> Госзакупки КЗ (goszakup.gov.kz)</label>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <div class="section-title">Китайские площадки</div>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label"><input type="checkbox" name="sources" value="china_1688"> 1688.com</label>
+                            <label class="checkbox-label"><input type="checkbox" name="sources" value="made_in_china"> Made-in-China</label>
                             <label class="checkbox-label"><input type="checkbox" name="sources" value="dhgate"> DHgate</label>
                         </div>
-                        <div class="field-error" id="sourcesError"></div>
                     </div>
                 </div>
 
-                <div class="form-group" style="flex: 1 1 100%; min-width: 100%;">
-                    <div class="form-section">
-                        <div class="section-title"></div>
-                        <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
-                            <div style="flex: 0 1 320px; min-width: 240px;">
-                                <label for="dateFrom" style="display:block; min-height: 34px; font-size: 12px; color: #64748b;">Активны с</label>
-                                <input type="date" id="dateFrom" style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; background: #fafafa;">
-                                <div class="field-error" id="dateFromError"></div>
-                            </div>
-                            <div style="flex: 0 1 320px; min-width: 240px;">
-                                <label for="dateTo" style="display:block; min-height: 34px; font-size: 12px; color: #64748b;">Активны до</label>
-                                <input type="date" id="dateTo" style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; background: #fafafa;">
-                                <div class="field-error" id="dateToError"></div>
-                            </div>
-                            <div style="flex: 0 1 260px; min-width: 240px;">
-                                <label for="minDaysLeft" style="display:block; min-height: 34px; font-size: 12px; color: #64748b;">Окончание не раньше чем через (дней)</label>
-                                <input type="number" id="minDaysLeft" min="0" max="365" placeholder="" style="width: 100%; padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; background: #fafafa;">
-                                <div class="field-error" id="minDaysLeftError"></div>
-                            </div>
-                        </div>
-                        <div style="margin-top: 6px; font-size: 11px; color: #94a3b8;">
-                            Фильтр 1: покажет тендеры, активные в выбранном диапазоне. Фильтр 2: покажет тендеры с окончанием не раньше указанного количества дней от сегодня.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group" style="flex: 1 1 100%; min-width: 100%; padding-top: 8px;">
-                    <button type="submit">Начать поиск</button>
-                    <div class="form-error" id="formError"></div>
+                <div class="form-group" style="flex: 1 1 100%; min-width: 100%; padding-top: 8px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                    <button type="submit">🚀 Начать поиск</button>
+                    <button type="button" class="fav-toggle-btn" id="favToggleBtn" onclick="toggleFavoritesView()">
+                        ⭐ Избранное <span class="fav-count-badge" id="favCountBadge">0</span>
+                    </button>
                 </div>
             </form>
+        </div>
+
+        <!-- Кабинет избранных -->
+        <div class="fav-cabinet" id="favCabinet">
+            <div class="fav-cabinet-header">
+                <h3>⭐ Кабинет избранных</h3>
+                <button class="fav-clear-btn" onclick="clearFavorites()">Очистить всё</button>
+            </div>
+            <div id="favResults"></div>
         </div>
 
         <!-- Status Panel -->
@@ -889,24 +860,16 @@
                 <div class="stat-label">ЭТП ГПБ</div>
             </div>
             <div class="stat-card">
+                <div class="stat-value" id="goszakupKzCount">0</div>
+                <div class="stat-label">Госзакупки КЗ</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="china1688Count">0</div>
+                <div class="stat-label">1688.com</div>
+            </div>
+            <div class="stat-card">
                 <div class="stat-value" id="madeInChinaCount">0</div>
                 <div class="stat-label">Made-in-China</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="globalsourcesCount">0</div>
-                <div class="stat-label">Global Sources</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="hktdcCount">0</div>
-                <div class="stat-label">HKTDC</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="b2bcsCount">0</div>
-                <div class="stat-label">B2BChinaSources</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="b2bmapCount">0</div>
-                <div class="stat-label">B2BMAP</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="dhgateCount">0</div>
@@ -934,17 +897,11 @@
                 <div class="filter-tab" data-filter="roseltorg">Росэлторг</div>
                 <div class="filter-tab" data-filter="fabrikant">Фабрикант</div>
                 <div class="filter-tab" data-filter="etpgpb">ЭТП ГПБ</div>
+                <div class="filter-tab" data-filter="goszakup_kz">Госзакупки КЗ</div>
+                <div class="filter-tab" data-filter="china_1688">1688.com</div>
                 <div class="filter-tab" data-filter="made_in_china">Made-in-China</div>
-                <div class="filter-tab" data-filter="globalsources">Global Sources</div>
-                <div class="filter-tab" data-filter="hktdc">HKTDC</div>
-                <div class="filter-tab" data-filter="b2bcs">B2BChinaSources</div>
-                <div class="filter-tab" data-filter="b2bmap">B2BMAP</div>
                 <div class="filter-tab" data-filter="dhgate">DHgate</div>
             </div>
-        </div>
-
-        <div class="selection-toolbar" id="selectionToolbar">
-            <button type="button" class="select-all-btn" id="toggleSelectAllBtn">Выбрать все</button>
         </div>
 
         <!-- Logs Panel -->
@@ -961,15 +918,132 @@
         let currentTaskId = null;
         let currentFilter = 'all';
         let allTenders = [];
-        let selectedTenderKeys = new Set();
         let startTime = null;
+        let favoritesVisible = false;
 
-        function getApiBaseUrl() {
-            const configured = localStorage.getItem('API_BASE_URL');
-            if (configured) return configured.replace(/\/+$/, '');
-            if (window.location.port === '5500') return 'http://127.0.0.1:8001';
-            return window.location.origin;
+        // --- Избранное: хранилище в localStorage ---
+        const FAV_KEY = 'tenders_favorites_v1';
+        let favorites = {};
+
+        function loadFavorites() {
+            try {
+                const raw = localStorage.getItem(FAV_KEY);
+                favorites = raw ? JSON.parse(raw) : {};
+            } catch(e) {
+                favorites = {};
+            }
+            updateFavBadge();
         }
+
+        function saveFavorites() {
+            try {
+                localStorage.setItem(FAV_KEY, JSON.stringify(favorites));
+            } catch(e) {}
+            updateFavBadge();
+        }
+
+        function updateFavBadge() {
+            const count = Object.keys(favorites).length;
+            const badge = document.getElementById('favCountBadge');
+            if (badge) badge.textContent = count;
+        }
+
+        function toggleFavoriteByIdx(idx, btn) {
+            const tender = allTenders[idx];
+            if (!tender) return;
+            const key = tender.url || tender.title || '';
+            if (favorites.hasOwnProperty(key)) {
+                delete favorites[key];
+                if (btn) { btn.textContent = '☆'; btn.classList.remove('fav-active'); btn.title = 'Добавить в избранное'; }
+            } else {
+                favorites[key] = tender;
+                if (btn) { btn.textContent = '⭐'; btn.classList.add('fav-active'); btn.title = 'Убрать из избранного'; }
+            }
+            saveFavorites();
+            if (favoritesVisible) renderFavoritesCabinet();
+        }
+
+        function toggleFavorite(key, btn) {
+            if (favorites.hasOwnProperty(key)) {
+                delete favorites[key];
+                if (btn) { btn.textContent = '☆'; btn.classList.remove('fav-active'); btn.title = 'Добавить в избранное'; }
+            } else {
+                const tender = Object.values(favorites).find(t => (t.url || t.title || '') === key)
+                    || allTenders.find(t => (t.url || t.title || '') === key);
+                if (tender) favorites[key] = tender;
+                if (btn) { btn.textContent = '⭐'; btn.classList.add('fav-active'); btn.title = 'Убрать из избранного'; }
+            }
+            saveFavorites();
+            if (favoritesVisible) renderFavoritesCabinet();
+        }
+
+        function toggleFavoritesView() {
+            favoritesVisible = !favoritesVisible;
+            const cabinet = document.getElementById('favCabinet');
+            const btn = document.getElementById('favToggleBtn');
+            if (favoritesVisible) {
+                cabinet.classList.add('fav-visible');
+                btn.classList.add('fav-toggle-active');
+                renderFavoritesCabinet();
+            } else {
+                cabinet.classList.remove('fav-visible');
+                btn.classList.remove('fav-toggle-active');
+            }
+        }
+
+        function clearFavorites() {
+            if (!confirm('Очистить весь список избранного?')) return;
+            favorites = {};
+            saveFavorites();
+            renderFavoritesCabinet();
+            // Обновим кнопки сердечек на карточках
+            document.querySelectorAll('.fav-btn.fav-active').forEach(b => {
+                b.textContent = '☆';
+                b.classList.remove('fav-active');
+                b.title = 'Добавить в избранное';
+            });
+        }
+
+        function renderFavoritesCabinet() {
+            const container = document.getElementById('favResults');
+            const items = Object.values(favorites);
+            if (items.length === 0) {
+                container.innerHTML = '<div class="fav-empty">Нет избранных тендеров. Нажмите ☆ на карточке тендера, чтобы добавить.</div>';
+                return;
+            }
+            const html = items.map(tender => {
+                const style = getSourceStyle(tender.source);
+                const favKey = tender.url || tender.title || '';
+                return `
+                    <div class="tender-card ${style.card}" style="margin-bottom: 16px;">
+                        <div class="auction__info">
+                            ${tender.law_type ? `<span class="auction__badge auction__number">${escapeHtml(tender.law_type)}</span>` : ''}
+                            ${tender.purchase_type ? `<span class="auction__badge auction__type-badge">${escapeHtml(tender.purchase_type)}</span>` : ''}
+                            ${tender.price ? `<span class="auction__badge auction__price-badge">${escapeHtml(tender.price)}</span>` : ''}
+                            <span class="source-badge ${style.badge}">${escapeHtml(tender.source)}</span>
+                        </div>
+                        <div class="tender-header">
+                            <div class="tender-title">
+                                <a href="${tender.url || '#'}" target="_blank">${escapeHtml(tender.title || '')}</a>
+                            </div>
+                            <button class="fav-btn fav-active" title="Убрать из избранного"
+                                onclick="toggleFavorite(${JSON.stringify(favKey)}, this)">⭐</button>
+                        </div>
+                        <div class="tender-meta">
+                            ${tender.customer ? `<div class="meta-item"><span class="meta-label">Заказчик:</span> <span class="meta-value">${escapeHtml(tender.customer)}</span></div>` : ''}
+                            ${tender.organizer ? `<div class="meta-item"><span class="meta-label">Организатор:</span> <span class="meta-value">${escapeHtml(tender.organizer)}</span></div>` : ''}
+                            ${tender.region ? `<div class="meta-item"><span class="meta-label">Регион:</span> <span class="meta-value">${escapeHtml(tender.region)}</span></div>` : ''}
+                            ${tender.publish_date ? `<div class="meta-item"><span class="meta-label">Опубликовано:</span> <span class="meta-value" style="color:#1976d2;">${escapeHtml(tender.publish_date)}</span></div>` : ''}
+                            ${tender.deadline ? `<div class="meta-item"><span class="meta-label">Срок подачи:</span> <span class="meta-value" style="color:#d32f2f;font-weight:bold;">${escapeHtml(tender.deadline)}</span></div>` : ''}
+                            ${tender.status ? `<div class="meta-item"><span class="meta-label">Статус:</span> <span class="meta-value">${escapeHtml(tender.status)}</span></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            container.innerHTML = html;
+        }
+
+        loadFavorites();
 
         const SOURCE_MAP = {
             'rts':          { sources: ['RTS-TENDER'],                      badge: 'badge-rts',       card: 'rts-style' },
@@ -984,15 +1058,13 @@
             'roseltorg':    { sources: ['ROSELTORG', 'РОСЭЛТОРГ'],         badge: 'badge-roseltorg', card: 'roseltorg-style' },
             'fabrikant':    { sources: ['FABRIKANT', 'ФАБРИКАНТ'],         badge: 'badge-fabrikant', card: 'fabrikant-style' },
             'etpgpb':       { sources: ['ETP-GPB', 'ЭТП ГПБ'],            badge: 'badge-etpgpb',    card: 'etpgpb-style' },
+            'goszakup_kz':  { sources: ['GOSZAKUP-KZ'],                    badge: 'badge-goszakup-kz', card: 'goszakup-kz-style' },
+            'china_1688':   { sources: ['1688.COM'],                        badge: 'badge-china',     card: 'china-style' },
             'made_in_china':{ sources: ['MADE-IN-CHINA.COM'],               badge: 'badge-china',     card: 'china-style' },
-            'globalsources':{ sources: ['GLOBALSOURCES', 'GLOBAL SOURCES'], badge: 'badge-china',     card: 'china-style' },
-            'hktdc':        { sources: ['HKTDC', 'HKTDC SOURCING'],         badge: 'badge-china',     card: 'china-style' },
-            'b2bcs':        { sources: ['B2BCHINASOURCES'],                 badge: 'badge-china',     card: 'china-style' },
-            'b2bmap':       { sources: ['B2BMAP'],                          badge: 'badge-china',     card: 'china-style' },
             'dhgate':       { sources: ['DHGATE', 'DHGATE.COM'],            badge: 'badge-china',     card: 'china-style' },
         };
 
-        const CHINA_SOURCES = ['MADE-IN-CHINA.COM', 'DHGATE', 'DHGATE.COM', 'GLOBALSOURCES', 'GLOBAL SOURCES', 'HKTDC', 'HKTDC SOURCING', 'B2BCHINASOURCES', 'B2BMAP'];
+        const CHINA_SOURCES = ['1688.COM', 'MADE-IN-CHINA.COM', 'DHGATE', 'DHGATE.COM'];
 
         function isChina(source) {
             return CHINA_SOURCES.includes((source || '').toUpperCase());
@@ -1014,175 +1086,6 @@
             return allTenders.filter(t => info.sources.some(s => (t.source || '').toUpperCase() === s || (t.source || '').toUpperCase().includes(s))).length;
         }
 
-        function formatDateMaskFromDigits(digitsRaw) {
-            const digits = String(digitsRaw || '').replace(/\D/g, '').slice(0, 8);
-            if (digits.length <= 2) return digits;
-            if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
-            return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
-        }
-
-        function isValidDateParts(day, month, year) {
-            const d = Number(day);
-            const m = Number(month);
-            const y = Number(year);
-            if (!Number.isInteger(d) || !Number.isInteger(m) || !Number.isInteger(y)) return false;
-            if (y < 1900 || y > 2100 || m < 1 || m > 12 || d < 1 || d > 31) return false;
-            const dt = new Date(y, m - 1, d);
-            return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
-        }
-
-        function formatDigitsDate(rawValue) {
-            let digits = String(rawValue || '').replace(/\D/g, '');
-            if (digits.length === 7) digits = '0' + digits;
-            if (digits.length !== 8) return null;
-            const day = digits.slice(0, 2);
-            const month = digits.slice(2, 4);
-            const year = digits.slice(4, 8);
-            if (!isValidDateParts(day, month, year)) return null;
-            return `${day}.${month}.${year}`;
-        }
-
-        function normalizeDateInput(rawValue) {
-            const v = String(rawValue || '').trim();
-            if (!v) return null;
-
-            const fromDigits = formatDigitsDate(v);
-            if (fromDigits) return fromDigits;
-
-            const dotMatch = v.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-            if (dotMatch && isValidDateParts(dotMatch[1], dotMatch[2], dotMatch[3])) {
-                return `${dotMatch[1]}.${dotMatch[2]}.${dotMatch[3]}`;
-            }
-
-            const isoMatch = v.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-            if (isoMatch && isValidDateParts(isoMatch[3], isoMatch[2], isoMatch[1])) {
-                return `${isoMatch[3]}.${isoMatch[2]}.${isoMatch[1]}`;
-            }
-
-            return null;
-        }
-
-        function bindSmartDateField(fieldId) {
-            const el = document.getElementById(fieldId);
-            if (!el) return;
-            if (el.type === 'date') return;
-            el.addEventListener('input', () => {
-                const masked = formatDateMaskFromDigits(el.value);
-                el.value = masked;
-                clearFieldError(fieldId, `${fieldId}Error`);
-            });
-            el.addEventListener('blur', () => {
-                const value = el.value.trim();
-                if (!value) {
-                    clearFieldError(fieldId, `${fieldId}Error`);
-                    return;
-                }
-                const normalized = normalizeDateInput(value);
-                if (!normalized) {
-                    setFieldError(fieldId, `${fieldId}Error`, 'Введите дату в формате дд.мм.гггг');
-                    return;
-                }
-                el.value = normalized;
-                clearFieldError(fieldId, `${fieldId}Error`);
-            });
-        }
-
-        function setFieldError(inputId, errorId, message) {
-            const input = document.getElementById(inputId);
-            const error = document.getElementById(errorId);
-            if (input) input.classList.add('field-invalid');
-            if (error) error.textContent = message;
-        }
-
-        function clearFieldError(inputId, errorId) {
-            const input = document.getElementById(inputId);
-            const error = document.getElementById(errorId);
-            if (input) input.classList.remove('field-invalid');
-            if (error) error.textContent = '';
-        }
-
-        function clearSourcesError() {
-            const error = document.getElementById('sourcesError');
-            if (error) error.textContent = '';
-        }
-
-        function validateFormFields(query, sources, dateFromValue, dateToValue, dateFrom, dateTo) {
-            let isValid = true;
-            clearFieldError('query', 'queryError');
-            clearFieldError('dateFrom', 'dateFromError');
-            clearFieldError('dateTo', 'dateToError');
-            clearSourcesError();
-            const formError = document.getElementById('formError');
-            if (formError) formError.textContent = '';
-
-            if (!String(query || '').trim()) {
-                setFieldError('query', 'queryError', 'поле не должно быть пустым');
-                isValid = false;
-            }
-            if (!sources.length) {
-                const error = document.getElementById('sourcesError');
-                if (error) error.textContent = 'поле не должно быть пустым';
-                isValid = false;
-            }
-            if (String(dateFromValue || '').trim() && !dateFrom) {
-                setFieldError('dateFrom', 'dateFromError', 'Введите дату в формате дд.мм.гггг');
-                isValid = false;
-            }
-            if (String(dateToValue || '').trim() && !dateTo) {
-                setFieldError('dateTo', 'dateToError', 'Введите дату в формате дд.мм.гггг');
-                isValid = false;
-            }
-            if (!isValid && formError) {
-                formError.textContent = 'Исправьте ошибки в форме перед запуском поиска';
-            }
-            return isValid;
-        }
-
-        function getSourceCheckboxes() {
-            return Array.from(document.querySelectorAll('input[name="sources"]'));
-        }
-
-        function updateToggleSourcesButtonLabel() {
-            const btn = document.getElementById('toggleSourcesBtn');
-            if (!btn) return;
-            const checkboxes = getSourceCheckboxes().filter(cb => !cb.disabled);
-            const allChecked = checkboxes.length > 0 && checkboxes.every(cb => cb.checked);
-            btn.textContent = allChecked ? 'Снять все площадки' : 'Выбрать все площадки';
-        }
-
-        function toggleAllSources() {
-            const checkboxes = getSourceCheckboxes().filter(cb => !cb.disabled);
-            const allChecked = checkboxes.length > 0 && checkboxes.every(cb => cb.checked);
-            const nextState = !allChecked;
-            checkboxes.forEach(cb => {
-                cb.checked = nextState;
-            });
-            updateToggleSourcesButtonLabel();
-        }
-
-        const toggleSourcesBtn = document.getElementById('toggleSourcesBtn');
-        if (toggleSourcesBtn) {
-            toggleSourcesBtn.addEventListener('click', toggleAllSources);
-            getSourceCheckboxes().forEach(cb => {
-                if (!cb.disabled) {
-                    cb.addEventListener('change', () => {
-                        updateToggleSourcesButtonLabel();
-                        clearSourcesError();
-                    });
-                }
-            });
-            updateToggleSourcesButtonLabel();
-        }
-
-        document.getElementById('query')?.addEventListener('input', () => {
-            clearFieldError('query', 'queryError');
-            const formError = document.getElementById('formError');
-            if (formError) formError.textContent = '';
-        });
-
-        bindSmartDateField('dateFrom');
-        bindSmartDateField('dateTo');
-
         document.getElementById('searchForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -1191,13 +1094,8 @@
             const sourcesCheckboxes = document.querySelectorAll('input[name="sources"]:checked');
             const sources = Array.from(sourcesCheckboxes).map(cb => cb.value);
 
-            const dateFromValue = document.getElementById('dateFrom').value || '';
-            const dateToValue = document.getElementById('dateTo').value || '';
-            const dateFrom = normalizeDateInput(dateFromValue);
-            const dateTo = normalizeDateInput(dateToValue);
-            const minDaysLeft = parseInt(document.getElementById('minDaysLeft').value) || null;
-
-            if (!validateFormFields(query, sources, dateFromValue, dateToValue, dateFrom, dateTo)) {
+            if (sources.length === 0) {
+                alert('Выберите хотя бы один источник!');
                 return;
             }
 
@@ -1205,18 +1103,17 @@
             document.getElementById('stats').style.display = 'none';
             document.getElementById('filters').style.display = 'none';
             document.getElementById('results').innerHTML = '';
-            document.getElementById('selectionToolbar').classList.remove('active');
             document.getElementById('logsPanel').style.display = 'block';
             document.getElementById('logsContent').textContent = 'Запуск парсинга...\n';
 
             startTime = Date.now();
-            const serverUrl = getApiBaseUrl();
+            const serverUrl = window.location.origin;
 
             try {
                 const response = await fetch(`${serverUrl}/api/search`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query, pages, sources, date_from: dateFrom, date_to: dateTo, min_days_left: minDaysLeft })
+                    body: JSON.stringify({ query, pages, sources })
                 });
 
                 const data = await response.json();
@@ -1234,7 +1131,7 @@
         async function pollTaskStatus() {
             if (!currentTaskId) return;
 
-            const serverUrl = getApiBaseUrl();
+            const serverUrl = window.location.origin;
             try {
                 const response = await fetch(`${serverUrl}/api/search/${currentTaskId}`);
                 const data = await response.json();
@@ -1263,11 +1160,7 @@
 
         function displayResults(results, totalResults, duration) {
             document.getElementById('statusPanel').classList.remove('active');
-            allTenders = (results || []).map((tender, idx) => ({
-                ...tender,
-                __selectionKey: `${tender.source || 'src'}|${tender.tender_id || 'id'}|${tender.url || 'url'}|${idx}`,
-            }));
-            selectedTenderKeys.clear();
+            allTenders = results || [];
 
             document.getElementById('stats').style.display = 'grid';
             document.getElementById('totalCount').textContent = allTenders.length;
@@ -1283,11 +1176,9 @@
             document.getElementById('roseltorgCount').textContent = countByFilter('roseltorg');
             document.getElementById('fabrikantCount').textContent = countByFilter('fabrikant');
             document.getElementById('etpgpbCount').textContent = countByFilter('etpgpb');
+            document.getElementById('goszakupKzCount').textContent = countByFilter('goszakup_kz');
+            document.getElementById('china1688Count').textContent = countByFilter('china_1688');
             document.getElementById('madeInChinaCount').textContent = countByFilter('made_in_china');
-            document.getElementById('globalsourcesCount').textContent = countByFilter('globalsources');
-            document.getElementById('hktdcCount').textContent = countByFilter('hktdc');
-            document.getElementById('b2bcsCount').textContent = countByFilter('b2bcs');
-            document.getElementById('b2bmapCount').textContent = countByFilter('b2bmap');
             document.getElementById('dhgateCount').textContent = countByFilter('dhgate');
             document.getElementById('duration').textContent = duration;
 
@@ -1337,11 +1228,8 @@
 
         function renderTenders(tenders) {
             const resultsDiv = document.getElementById('results');
-            window._tenderIndex = 0;
-            window._aiTenderData = {};
 
             if (tenders.length === 0) {
-                document.getElementById('selectionToolbar').classList.remove('active');
                 resultsDiv.innerHTML = `
                     <div class="no-results">
                         <div class="no-results-icon">📭</div>
@@ -1351,7 +1239,7 @@
                 return;
             }
 
-            const isChinaFilter = ['made_in_china', 'dhgate'].includes(currentFilter);
+            const isChinaFilter = ['china_1688', 'made_in_china', 'dhgate'].includes(currentFilter);
             const chinaOffers = isChinaFilter
                 ? tenders
                 : tenders.filter(t => isChina(t.source));
@@ -1359,7 +1247,6 @@
                 ? []
                 : tenders.filter(t => !isChina(t.source));
 
-            updateSelectionToolbar(regularTenders);
             let html = '';
 
             if (regularTenders.length > 0) {
@@ -1371,7 +1258,7 @@
                     const rep = tender.customer_reputation != null ? parseFloat(tender.customer_reputation) : null;
 
                     let mlParts = [];
-                    if (predPrice) mlParts.push('Прогноз контракта: ' + predPrice + ' <span style="font-size:10px;color:#94a3b8;">(после торгов)</span>');
+                    if (predPrice) mlParts.push('Прогноз цены: ' + predPrice);
                     if (risk != null && !isNaN(risk)) {
                         const riskClass = getRiskClass(risk);
                         mlParts.push('Риск: <span class="risk-badge ' + riskClass + '">' + risk.toFixed(2) + '</span>');
@@ -1384,22 +1271,12 @@
                         ? '<div class="ml-block"><span class="ml-label">ML:</span> ' + mlParts.join(' | ') + '</div>'
                         : '';
 
-                    const tIdx = window._tenderIndex = (window._tenderIndex || 0);
-                    window._tenderIndex++;
-                    const aiId = 'ai-' + tIdx;
-
-                    if (!window._aiTenderData) window._aiTenderData = {};
-                    window._aiTenderData[aiId] = {
-                        title: tender.title||'', price: tender.price||'',
-                        customer: tender.customer||'', law_type: tender.law_type||'',
-                        purchase_type: tender.purchase_type||'', deadline: tender.deadline||'',
-                        region: tender.region||'', source: tender.source||''
-                    };
-
+                        const favKey = tender.url || tender.title || '';
+                    const isFav = favorites.hasOwnProperty(favKey);
+                    const favIdx = allTenders.indexOf(tender);
                     return `
                         <div class="tender-card ${style.card}">
                             <div class="auction__info">
-                                <input class="tender-select" type="checkbox" data-selection-key="${escapeHtml(tender.__selectionKey)}" ${selectedTenderKeys.has(tender.__selectionKey) ? 'checked' : ''}>
                                 ${tender.law_type ? `<span class="auction__badge auction__number">${escapeHtml(tender.law_type)}</span>` : ''}
                                 ${tender.purchase_type ? `<span class="auction__badge auction__type-badge">${escapeHtml(tender.purchase_type)}</span>` : ''}
                                 ${tender.price ? `<span class="auction__badge auction__price-badge">${escapeHtml(tender.price)}</span>` : ''}
@@ -1409,6 +1286,8 @@
                                 <div class="tender-title">
                                     <a href="${tender.url || '#'}" target="_blank">${escapeHtml(tender.title || '')}</a>
                                 </div>
+                                <button class="fav-btn ${isFav ? 'fav-active' : ''}" title="${isFav ? 'Убрать из избранного' : 'Добавить в избранное'}"
+                                    data-fav-idx="${favIdx}" onclick="toggleFavoriteByIdx(${favIdx}, this)">${isFav ? '⭐' : '☆'}</button>
                             </div>
                             <div class="tender-meta">
                                 ${tender.tender_id ? `<div class="meta-item"><span class="meta-label">ID:</span> <span class="meta-value" style="font-weight: 600;">#${escapeHtml(tender.tender_id)}</span></div>` : ''}
@@ -1421,8 +1300,6 @@
                                 ${tender.status ? `<div class="meta-item"><span class="meta-label">Статус:</span> <span class="meta-value">${escapeHtml(tender.status)}</span></div>` : ''}
                             </div>
                             ${mlHtml}
-                            <button class="ai-btn" data-ai-id="${aiId}" onclick="runAiAnalysis(this)">🤖 AI-анализ рисков</button>
-                            <div id="${aiId}" style="display:none;"></div>
                         </div>
                     `;
                 }).join('');
@@ -1448,14 +1325,13 @@
 
                 html += `
                     <div class="china-section">
-                        <h3>Зарубежные площадки (${chinaOffers.length} предложений)</h3>
+                        <h3>Китайские площадки (${chinaOffers.length} предложений)</h3>
                         <div class="china-offers-grid">${offersHtml}</div>
                     </div>
                 `;
             }
 
             resultsDiv.innerHTML = html;
-            bindSelectionHandlers();
         }
 
         function showError(message) {
@@ -1472,113 +1348,6 @@
             const div = document.createElement('div');
             div.textContent = String(text);
             return div.innerHTML;
-        }
-
-        async function runAiAnalysis(btn) {
-            const aiId = btn.dataset.aiId;
-            const tender = (window._aiTenderData || {})[aiId];
-            if (!tender) { return; }
-            const resultDiv = document.getElementById(aiId);
-            if (!resultDiv) return;
-
-            btn.disabled = true;
-            btn.innerHTML = '<span class="spinner"></span> Анализирую...';
-            resultDiv.style.display = 'none';
-
-            try {
-                const resp = await fetch(getApiBaseUrl() + '/api/ai/analyze', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(tender),
-                });
-                const data = await resp.json();
-
-                const recClass = data.recommendation === 'участвовать' ? 'ai-rec-go'
-                    : data.recommendation === 'не рекомендуется' ? 'ai-rec-stop' : 'ai-rec-caution';
-                const recIcon = data.recommendation === 'участвовать' ? '✅'
-                    : data.recommendation === 'не рекомендуется' ? '🚫' : '⚠️';
-
-                let riskFactorsHtml = '';
-                if (data.risk_factors && data.risk_factors.length) {
-                    riskFactorsHtml = '<div class="ai-factors"><strong>Риски:</strong> ' +
-                        data.risk_factors.map(f => '<span class="ai-risk-factor">' + escapeHtml(f) + '</span>').join('') + '</div>';
-                }
-                let oppsHtml = '';
-                if (data.opportunities && data.opportunities.length) {
-                    oppsHtml = '<div class="ai-factors"><strong>Возможности:</strong> ' +
-                        data.opportunities.map(f => '<span class="ai-opportunity">' + escapeHtml(f) + '</span>').join('') + '</div>';
-                }
-
-                const scoreHtml = data.ai_risk_score != null
-                    ? ' | AI-риск: <span class="risk-badge ' + getRiskClass(data.ai_risk_score) + '">' + parseFloat(data.ai_risk_score).toFixed(2) + '</span>'
-                    : '';
-
-                resultDiv.innerHTML = `
-                    <div class="ai-result">
-                        <div class="ai-title">🤖 AI-анализ</div>
-                        <div><span class="ai-rec ${recClass}">${recIcon} ${escapeHtml(data.recommendation || '')}</span>${scoreHtml}</div>
-                        <div style="margin: 8px 0;">${escapeHtml(data.risk_analysis || '')}</div>
-                        ${riskFactorsHtml}
-                        ${oppsHtml}
-                    </div>
-                `;
-                resultDiv.style.display = 'block';
-                btn.innerHTML = '🤖 Анализ готов ✓';
-            } catch (err) {
-                resultDiv.innerHTML = '<div class="ai-result" style="border-color:#fee2e2;">Ошибка анализа: ' + escapeHtml(err.message) + '</div>';
-                resultDiv.style.display = 'block';
-                btn.disabled = false;
-                btn.innerHTML = '🤖 AI-анализ рисков';
-            }
-        }
-
-        function getVisibleTenderCheckboxes() {
-            return Array.from(document.querySelectorAll('.tender-select'));
-        }
-
-        function updateSelectionToolbar(regularTenders) {
-            const toolbar = document.getElementById('selectionToolbar');
-            if (!toolbar) return;
-            toolbar.classList.toggle('active', regularTenders.length > 0);
-            updateSelectAllButtonLabel(getVisibleTenderCheckboxes());
-        }
-
-        function updateSelectAllButtonLabel(checkboxes) {
-            const btn = document.getElementById('toggleSelectAllBtn');
-            if (!btn) return;
-            const allChecked = checkboxes.length > 0 && checkboxes.every(cb => cb.checked);
-            btn.textContent = allChecked ? 'Снять все' : 'Выбрать все';
-        }
-
-        function bindSelectionHandlers() {
-            const btn = document.getElementById('toggleSelectAllBtn');
-            const checkboxes = getVisibleTenderCheckboxes();
-
-            if (btn) {
-                btn.onclick = () => {
-                    const visible = getVisibleTenderCheckboxes();
-                    const allChecked = visible.length > 0 && visible.every(cb => cb.checked);
-                    const nextState = !allChecked;
-                    visible.forEach(cb => {
-                        cb.checked = nextState;
-                        const key = cb.dataset.selectionKey;
-                        if (nextState) selectedTenderKeys.add(key);
-                        else selectedTenderKeys.delete(key);
-                    });
-                    updateSelectAllButtonLabel(visible);
-                };
-            }
-
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', () => {
-                    const key = cb.dataset.selectionKey;
-                    if (cb.checked) selectedTenderKeys.add(key);
-                    else selectedTenderKeys.delete(key);
-                    updateSelectAllButtonLabel(getVisibleTenderCheckboxes());
-                });
-            });
-
-            updateSelectAllButtonLabel(checkboxes);
         }
     </script>
 </body>
